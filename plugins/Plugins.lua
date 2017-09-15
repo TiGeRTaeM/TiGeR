@@ -154,3 +154,86 @@ end
 
 local function run(msg, matches)
   -- Show the available plugins
+ 
+  if is_sudo(msg) then
+  if matches[1]:lower() == '!plist' or matches[1]:lower() == '/plist' or matches[1]:lower() == '#plist' then --after changed to moderator mode, set only sudo
+    return list_all_plugins()
+  end
+end
+  -- Re-enable a plugin for this chat
+   if matches[1] == 'pl' or matches[1] == 'Pl' then
+  if matches[2] == '+' and matches[4] == 'chat' then
+      if is_momod(msg) then
+    local receiver = msg.chat_id_
+    local plugin = matches[3]
+    print("enable "..plugin..' on this chat')
+    return reenable_plugin_on_chat(receiver, plugin)
+  end
+    end
+
+  -- Enable a plugin
+  if matches[2] == '+' and is_sudo(msg) then --after changed to moderator mode, set only sudo
+      if is_mod(msg) then
+    local plugin_name = matches[3]
+    print("enable: "..matches[3])
+    return enable_plugin(plugin_name)
+  end
+    end
+  -- Disable a plugin on a chat
+  if matches[2] == '-' and matches[4] == 'chat' then
+      if is_mod(msg) then
+    local plugin = matches[3]
+    local receiver = msg.chat_id_
+    print("disable "..plugin..' on this chat')
+    return disable_plugin_on_chat(receiver, plugin)
+  end
+    end
+  -- Disable a plugin
+  if matches[2] == '-' and is_sudo(msg) then --after changed to moderator mode, set only sudo
+    if matches[3] == 'plugins' then
+    	return 'This plugin can\'t be disabled'
+    end
+    print("disable: "..matches[3])
+    return disable_plugin(matches[3])
+  end
+end
+  -- Reload all the plugins!
+  if matches[1] == '*' and is_sudo(msg) then --after changed to moderator mode, set only sudo
+    return reload_plugins(true)
+  end
+  if matches[1]:lower() == 'reload' and is_sudo(msg) or matches[1]:lower() == 'Reload' and is_sudo(msg) then --after changed to moderator mode, set only sudo
+    return reload_plugins(true)
+  end
+end
+
+return {
+  description = "Plugin to manage other plugins. Enable, disable or reload.", 
+  usage = {
+      moderator = {
+          "!plug disable [plugin] chat : disable plugin only this chat.",
+          "!plug enable [plugin] chat : enable plugin only this chat.",
+          },
+      sudo = {
+          "!plist : list all plugins.",
+          "!pl + [plugin] : enable plugin.",
+          "!pl - [plugin] : disable plugin.",
+          "!pl * : reloads all plugins." },
+          },
+  patterns = {
+    "^[!/#]plist$",
+    "^[!/#](pl) (+) ([%w_%.%-]+)$",
+    "^[!/#](pl) (-) ([%w_%.%-]+)$",
+    "^[!/#](pl) (+) ([%w_%.%-]+) (chat)",
+    "^[!/#](pl) (-) ([%w_%.%-]+) (chat)",
+    "^!pl? (*)$",
+    "^[!/](reload)$",
+    "^([Pp]l) (+) ([%w_%.%-]+)$",
+    "^([Pp]l) (-) ([%w_%.%-]+)$",
+    "^([Pp]l) (+) ([%w_%.%-]+) (chat)",
+    "^([Pp]l) (-) ([%w_%.%-]+) (chat)",
+	"^([Rr]eload)$"
+    },
+  run = run
+}
+
+end
