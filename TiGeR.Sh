@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
 
+
 git clone https://github.com/TiGeRTaeM/TiGeR
-cd TiGeR-1/cli
 
-chmod +x TiGeR-1.sh
+cd TiGeR/cli
 
- chmod 777 auto.sh
-&& sed -i -e 's/\r$//' auto.sh
+chmod +x TiGeR.sh
 
-./TiGeR-1.sh install && ./TiGeR.sh
+chmod 777 auto.sh && SED -i -e ' S / \ R $ //' auto.sh
+
+./TiGeR.sh install && ./TiGeR .sh
